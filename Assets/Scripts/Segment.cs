@@ -14,10 +14,6 @@ public class Segment {
         uSegment.localScale = Vector3.one * 0.9f;
     }
 
-    private void SetUnityPosition(Vector3 position) {
-        uSegment.localPosition = position + Vector3.up * 0.5f;
-    }
-
     public void Move(Vector3 offset) {
         position += offset;
         SetUnityPosition(position);
@@ -26,5 +22,9 @@ public class Segment {
     public void MoveTo(Segment segment) {
         position = segment.position;
         SetUnityPosition(position);
+    }
+
+    private void SetUnityPosition(Vector3 position) {
+        uSegment.localPosition = position + Vector3.up * 0.5f;
     }
 }
