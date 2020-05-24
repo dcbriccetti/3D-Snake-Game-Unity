@@ -11,7 +11,7 @@ public class Snake {
         Vector3 V(int x, int y, int z) => new Vector3(x, y, z);
 
         var initialSegmentPositions = new [] {
-            V(0, 2, 0),
+            V(0, 2, 0), // Head of the snake
             V(0, 1, 0),
             V(0, 0, 0),
         };

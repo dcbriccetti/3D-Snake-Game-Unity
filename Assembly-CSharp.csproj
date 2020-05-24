@@ -61,6 +61,9 @@
      <Compile Include="Assets\Scripts\Game.cs" />
      <Compile Include="Assets\Scripts\Segment.cs" />
      <Compile Include="Assets\Scripts\Snake.cs" />
+     <Compile Include="Assets\mrv_snake\Scripts\Arena.cs" />
+     <Compile Include="Assets\mrv_snake\Scripts\Controller.cs" />
+     <Compile Include="Assets\mrv_snake\Scripts\SnakeAgent.cs" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>/Users/daveb/devel/unity/3D Snake/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>

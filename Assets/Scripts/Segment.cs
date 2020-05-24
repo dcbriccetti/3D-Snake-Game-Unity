@@ -11,7 +11,7 @@ public class Segment {
         this.uSegment = uSegment;
 
         SetUnityPosition(position);
-        uSegment.localScale = Vector3.one * 0.9f;
+        uSegment.localScale = Vector3.one * 0.8f;
     }
 
     public void Move(Vector3 offset) {
@@ -25,6 +25,7 @@ public class Segment {
     }
 
     private void SetUnityPosition(Vector3 position) {
-        uSegment.localPosition = position + Vector3.up * 0.5f;
+        var gridCellAlignmentOffset = Vector3.up * 0.5f;
+        uSegment.localPosition = position + gridCellAlignmentOffset;
     }
 }
