@@ -490,10 +490,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0097709b5a5429c4d9f7bb4e60ad5fe6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controlTile: {fileID: 1234387239}
   target: {fileID: 588829959}
   cameraPitchAndYaw: {x: 30, y: 0}
-  mouseSensitivity: {x: 2, y: 2, z: 1}
+  mouseSensitivity: {x: 0.5, y: 0.5, z: 0.5}
   distanceFromTarget: 35
   snake: {fileID: 1353673968}
 --- !u!114 &1582697951

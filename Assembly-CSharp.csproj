@@ -68,9 +68,6 @@
  <Reference Include="Unity.VSCode.Editor">
  <HintPath>/Users/daveb/devel/unity/3D Snake/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
  </Reference>
- <Reference Include="Unity.InputSystem">
- <HintPath>/Users/daveb/devel/unity/3D Snake/Library/ScriptAssemblies/Unity.InputSystem.dll</HintPath>
- </Reference>
  <Reference Include="Unity.TextMeshPro.Editor">
  <HintPath>/Users/daveb/devel/unity/3D Snake/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
@@ -91,6 +88,9 @@
  </Reference>
  <Reference Include="UnityEditor.UI">
  <HintPath>/Users/daveb/devel/unity/3D Snake/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.InputSystem">
+ <HintPath>/Users/daveb/devel/unity/3D Snake/Library/ScriptAssemblies/Unity.InputSystem.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>/Applications/Unity/Hub/Editor/2019.3.13f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
