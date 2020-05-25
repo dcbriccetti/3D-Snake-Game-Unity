@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using static SnakeAgent.State;
@@ -18,6 +20,7 @@ public class SnakeAgent : MonoBehaviour {
     public float minSegmentScale = 0.5f;
 
     private float timer;
+    private float nextMoveTime = Time.time;
 
     void Start() {
         for (int i = 0; i < initialNumSegments; ++i) {
@@ -43,25 +46,31 @@ public class SnakeAgent : MonoBehaviour {
                 break;
             case Animating:
                 if (timer < animationDuration) {
-                    float progress = timer / animationDuration;
-                    Vector3 segmentGoingTo = segmentPositions[0] + direction;
-                    for (int i = 0; i < segmentGraphics.Count; ++i) {
-                        var segmentAt = segmentPositions[i];
-                        segmentGraphics[i].transform.position = Vector3.Lerp(segmentAt, segmentGoingTo, progress);
-                        segmentGoingTo = segmentAt;
-                    }
+                    MoveSegments(timer / animationDuration);
                 } else {
-                    segmentPositions.Insert(0, segmentPositions[0] + direction);
-                    segmentPositions.RemoveAt(segmentPositions.Count - 1);
-                    for (int i = 0; i < segmentGraphics.Count; ++i) {
-                        segmentGraphics[i].transform.position = segmentPositions[i];
-                    }
+                    AdvanceSegmentPositions();
 
                     timer -= animationDuration;
                     state = Waiting;
                 }
 
                 break;
+        }
+    }
+
+    private void MoveSegments(float progress) {
+        for (int i = 0; i < segmentGraphics.Count; ++i) {
+            var goingToPos = i == 0 ? segmentPositions[0] + direction : segmentPositions[i - 1];
+            segmentGraphics[i].transform.position =
+                Vector3.Lerp(segmentPositions[i], goingToPos, progress);
+        }
+    }
+    
+    private void AdvanceSegmentPositions() {
+        segmentPositions.Insert(0, segmentPositions[0] + direction);
+        segmentPositions.RemoveAt(segmentPositions.Count - 1);
+        for (int i = 0; i < segmentGraphics.Count; ++i) {
+            segmentGraphics[i].transform.position = segmentPositions[i];
         }
     }
 }
