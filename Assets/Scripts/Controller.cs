@@ -1,34 +1,36 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
 public class Controller : MonoBehaviour {
-    public GameObject controlTile;
     public Transform target;
-    Transform t;
 
-    /// pitch, yaw (roll omitted)
-    public Vector2 cameraRotation;
+    [FormerlySerializedAs("cameraRotation")]
+    public Vector2 cameraPitchAndYaw;
 
     public Vector3 mouseSensitivity = Vector3.one * 5;
     public float distanceFromTarget = 10;
-
-    private bool controlTileDirectionNeedsCalculation = true;
-
     public SnakeAgent snake;
-    private Vector2 movement;
+
+    private Transform cachedTransform;
+    private Vector2 look = Vector2.zero;
+    private float zoom;
 
     void Start() {
-        t = transform; // cached, because 'transform' is actually a function call with a cost that grows with component count.
+        cachedTransform =
+            transform; // cached, because 'transform' is actually a function call with a cost that grows with component count.
         if (!snake) {
             Debug.LogWarning(name + " controller has no snake to control!");
         }
     }
 
-    public void OnMove(InputAction.CallbackContext context) => movement = context.ReadValue<Vector2>();
+    public void OnLook(InputAction.CallbackContext context) => look = context.ReadValue<Vector2>();
 
-    Vector3 BestCardinalDirection(Vector3 lookDirection) {
+    public void OnZoom(InputAction.CallbackContext context) => zoom = context.ReadValue<float>();
+
+    private static Vector3 BestCardinalDirection(Vector3 lookDirection) {
         Vector3 dir = Arena.Directions[0];
         float bestAlignment = Vector3.Dot(lookDirection, dir);
         for (int i = 1; i < Arena.Directions.Length; ++i) {
@@ -42,50 +44,38 @@ public class Controller : MonoBehaviour {
         return dir;
     }
 
-    void FixedUpdate() {
+    private void FixedUpdate() {
         // happens at very regular intervals, usually slower than Update
-        if (controlTileDirectionNeedsCalculation) {
-            Vector3 f = BestCardinalDirection(t.forward);
-            Vector3 u = BestCardinalDirection(t.up);
-            Quaternion moveRotation = Quaternion.LookRotation(f, u);
-            controlTile.transform.rotation = moveRotation;
-            controlTileDirectionNeedsCalculation = false;
-        }
-
         if (!snake) return;
 
-        bool movingH = movement.x != 0;
-        bool movingV = movement.y != 0;
+        var k = Keyboard.current;
+        var movementX = k.leftArrowKey.isPressed ? -1 : k.rightArrowKey.isPressed ? 1 : 0;
+        var movementY = k.downArrowKey.isPressed ? -1 : k.upArrowKey.isPressed ? 1 : 0;
+        var movementZ = k.tKey.isPressed ? -1 : k.gKey.isPressed ? 1 : 0;
+        bool movingX = movementX != 0;
+        bool movingY = movementY != 0;
+        bool movingZ = movementZ != 0;
 
-        if (movingH != movingV) {
+        if (movingX || movingY || movingZ) {
             int Sign(float value) => value > 0 ? 1 : -1;
-            snake.direction = controlTile.transform.rotation *
-                              (movingH ? Vector3.right * Sign(movement.x) : Vector3.up * Sign(movement.y));
-            controlTile.transform.position = snake.positions[0] + snake.direction;
+            snake.direction =
+                movingX ? Vector3.right * Sign(movementX) :
+                movingY ? Vector3.up * Sign(movementY) :
+                Vector3.back * Sign(movementZ);
         }
     }
 
-    void Update() {
-        // Needs converting to new input scheme
-        
-        //happens every animation frame, not terribly time bound
-        /*
-        float mouseHorizontal = Input.GetAxis("Mouse X");
-        float mouseVertical   = Input.GetAxis("Mouse Y");
-        if (mouseHorizontal != 0 || mouseVertical != 0) {
-            controlTileDirectionNeedsCalculation = true;
-        }
-        
-        cameraRotation.x -= mouseVertical   * mouseSensitivity.y; // inverting y axis, 
-        cameraRotation.y += mouseHorizontal * mouseSensitivity.x;
-        distanceFromTarget += Input.GetAxis("Mouse ScrollWheel") * mouseSensitivity.z;
-        */
+    private void Update() {
+        // happens every animation frame, not terribly time bound
+        cameraPitchAndYaw.x -= look.y * mouseSensitivity.y; // inverting y axis, 
+        cameraPitchAndYaw.y += look.x * mouseSensitivity.x;
+        distanceFromTarget += zoom * mouseSensitivity.z;
     }
 
     private void
         LateUpdate() // happens every frame JUST before the render call. will cause stuttering if this takes too long.
     {
-        t.rotation = Quaternion.identity * Quaternion.Euler(cameraRotation);
-        t.position = target.position - t.forward * distanceFromTarget;
+        cachedTransform.rotation = Quaternion.identity * Quaternion.Euler(cameraPitchAndYaw);
+        cachedTransform.position = target.position - cachedTransform.forward * distanceFromTarget;
     }
 }

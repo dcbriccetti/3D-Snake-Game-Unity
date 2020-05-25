@@ -25,6 +25,30 @@ public class @SimpleControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""movez"",
+                    ""type"": ""Value"",
+                    ""id"": ""87637093-2e61-423f-8747-4baa56a86945"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""look"",
+                    ""type"": ""Value"",
+                    ""id"": ""c3b3a96d-15bc-4e71-b3e0-5a21b034a303"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""zoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""3588f388-5a79-44ed-8dea-7c5cde723cfb"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -148,6 +172,83 @@ public class @SimpleControls : IInputActionCollection, IDisposable
                     ""action"": ""move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f86bef3b-9ac4-4eb6-89e4-9ff672ece82e"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a4f63caf-9a27-4ff7-8664-abd658c71d7f"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""80909340-f23c-4cad-b909-35db1a6166bb"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""movez"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""91a3952e-3115-4784-a766-18ed86d7910b"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""movez"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""c6337b9c-f2c9-4de7-a787-cb61a6eeb0d2"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""movez"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""befb6a8d-772e-4bf7-a11c-3aa5f3e95ea5"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""movez"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""353995d0-01a6-4383-b566-0f617a88f62a"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""movez"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -157,6 +258,9 @@ public class @SimpleControls : IInputActionCollection, IDisposable
         // gameplay
         m_gameplay = asset.FindActionMap("gameplay", throwIfNotFound: true);
         m_gameplay_move = m_gameplay.FindAction("move", throwIfNotFound: true);
+        m_gameplay_movez = m_gameplay.FindAction("movez", throwIfNotFound: true);
+        m_gameplay_look = m_gameplay.FindAction("look", throwIfNotFound: true);
+        m_gameplay_zoom = m_gameplay.FindAction("zoom", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -207,11 +311,17 @@ public class @SimpleControls : IInputActionCollection, IDisposable
     private readonly InputActionMap m_gameplay;
     private IGameplayActions m_GameplayActionsCallbackInterface;
     private readonly InputAction m_gameplay_move;
+    private readonly InputAction m_gameplay_movez;
+    private readonly InputAction m_gameplay_look;
+    private readonly InputAction m_gameplay_zoom;
     public struct GameplayActions
     {
         private @SimpleControls m_Wrapper;
         public GameplayActions(@SimpleControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @move => m_Wrapper.m_gameplay_move;
+        public InputAction @movez => m_Wrapper.m_gameplay_movez;
+        public InputAction @look => m_Wrapper.m_gameplay_look;
+        public InputAction @zoom => m_Wrapper.m_gameplay_zoom;
         public InputActionMap Get() { return m_Wrapper.m_gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -224,6 +334,15 @@ public class @SimpleControls : IInputActionCollection, IDisposable
                 @move.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMove;
                 @move.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMove;
                 @move.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMove;
+                @movez.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMovez;
+                @movez.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMovez;
+                @movez.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMovez;
+                @look.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLook;
+                @look.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLook;
+                @look.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLook;
+                @zoom.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoom;
+                @zoom.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoom;
+                @zoom.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoom;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -231,6 +350,15 @@ public class @SimpleControls : IInputActionCollection, IDisposable
                 @move.started += instance.OnMove;
                 @move.performed += instance.OnMove;
                 @move.canceled += instance.OnMove;
+                @movez.started += instance.OnMovez;
+                @movez.performed += instance.OnMovez;
+                @movez.canceled += instance.OnMovez;
+                @look.started += instance.OnLook;
+                @look.performed += instance.OnLook;
+                @look.canceled += instance.OnLook;
+                @zoom.started += instance.OnZoom;
+                @zoom.performed += instance.OnZoom;
+                @zoom.canceled += instance.OnZoom;
             }
         }
     }
@@ -238,5 +366,8 @@ public class @SimpleControls : IInputActionCollection, IDisposable
     public interface IGameplayActions
     {
         void OnMove(InputAction.CallbackContext context);
+        void OnMovez(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
+        void OnZoom(InputAction.CallbackContext context);
     }
 }

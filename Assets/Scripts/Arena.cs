@@ -2,7 +2,7 @@
 using static UnityEngine.Vector3;
 
 public class Arena : MonoBehaviour {
-    // intentionally [X, Y, Z, -X, -Y, -Z]
+    //                                             [X,     Y,  Z,       -X,   -Y,   -Z]
     public static readonly Vector3[] Directions = { right, up, forward, left, down, back };
     private static readonly string[] FaceNames = "right ceiling front left floor back".Split(' ');
     public Vector3 size = one * 10;
