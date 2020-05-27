@@ -551,16 +551,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75b2c13fa822052488f56d7b9710ee50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nextDirection: {x: 0, y: 0, z: 0}
   color: {r: 0, g: 1, b: 0, a: 1}
-  direction: {x: 0, y: 0, z: 0}
-  delayBetweenAnimations: 0.75
-  animationDuration: 0.25
+  delayBetweenAnimations: 0.3
+  animationDuration: 0.7
   segmentPrefab: {fileID: 2875008569777376467, guid: cd4b3ffcbeb784b4e8a7b15ea5e00a64,
     type: 3}
   segmentPositions: []
   segmentGraphics: []
   initialNumSegments: 10
-  maxSegmentScale: 0.9
+  maxSegmentScale: 0.8
   minSegmentScale: 0.5
 --- !u!4 &1353673969
 Transform:
@@ -674,6 +674,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 588829959}
+  foodItemPrefab: {fileID: 6042716352419784791, guid: 8ed3f42f0f42442f08d967f05bf79f0d,
+    type: 3}
   cameraPitchAndYaw: {x: 30, y: 0}
   mouseSensitivity: {x: 0.5, y: 0.5, z: 0.5}
   distanceFromTarget: 35
