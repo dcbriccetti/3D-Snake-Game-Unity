@@ -2,17 +2,16 @@
 using static UnityEngine.Vector3;
 
 public class Arena : MonoBehaviour {
-    //                                             [X,     Y,  Z,       -X,   -Y,   -Z]
-    public static readonly Vector3[] Directions = { right, up, forward, left, down, back };
-    private static readonly string[] FaceNames = "right ceiling front left floor back".Split(' ');
+    //                                             [X,     -Y,   -Z]
+    public static readonly Vector3[] Directions = { right, down, forward };
     public Vector3 size = one * 10;
 
     void CreateFaces() {
-        for (int i = 0; i < FaceNames.Length; ++i) {
+        for (int i = 0; i < Directions.Length; ++i) {
             int axisIndex = i % 3;
             bool isZAligned = i != 2;
             var faceQuad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            faceQuad.name = FaceNames[i];
+            faceQuad.name = "Arena " + i + 1;
             var faceTransform = faceQuad.transform;
             faceTransform.position = Directions[i] * size[axisIndex];
             faceTransform.rotation = Quaternion.LookRotation(Directions[i], isZAligned ? up : forward);

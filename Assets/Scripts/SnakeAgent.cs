@@ -1,30 +1,25 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
-using static SnakeAgent.State;
 
 public class SnakeAgent : MonoBehaviour {
+    public Vector3 nextDirection;
     public Color color = Color.green;
-    public Vector3 direction;
     public float delayBetweenAnimations = 0.75f;
     public float animationDuration = 0.25f;
     public GameObject segmentPrefab;
     public List<Vector3> segmentPositions;
     public List<GameObject> segmentGraphics = new List<GameObject>();
-    public enum State { Waiting, Animating }
-    public State state;
     public int initialNumSegments = 3;
     public float maxSegmentScale = 1f;
     public float minSegmentScale = 0.5f;
 
     private float timer;
-    private float nextMoveTime = Time.time;
+    private float timeInMovementCycle;
+    private Vector3 direction;
 
     void Start() {
         for (int i = 0; i < initialNumSegments; ++i) {
-            segmentPositions.Add(Vector3.zero);
+            segmentPositions.Add(Vector3.left * i);
             var seg = Instantiate(segmentPrefab, Vector3.zero, Quaternion.identity);
             seg.GetComponent<Renderer>().material.color = color;
             seg.transform.localScale =
@@ -35,26 +30,16 @@ public class SnakeAgent : MonoBehaviour {
     }
 
     void Update() {
-        timer += Time.deltaTime;
-        switch (state) {
-            case Waiting:
-                if (timer >= delayBetweenAnimations) {
-                    timer -= delayBetweenAnimations;
-                    state = Animating;
-                }
+        if (direction == Vector3.zero) direction = nextDirection;
+        if (direction == Vector3.zero) return;
 
-                break;
-            case Animating:
-                if (timer < animationDuration) {
-                    MoveSegments(timer / animationDuration);
-                } else {
-                    AdvanceSegmentPositions();
-
-                    timer -= animationDuration;
-                    state = Waiting;
-                }
-
-                break;
+        timeInMovementCycle += Time.deltaTime;
+        if (timeInMovementCycle < animationDuration) {
+            MoveSegments(timeInMovementCycle / animationDuration);
+        } else if (timeInMovementCycle > animationDuration + delayBetweenAnimations) {
+            AdvanceSegmentPositions();
+            timeInMovementCycle = 0;
+            direction = nextDirection;
         }
     }
 

@@ -21,9 +21,6 @@ public class Controller : MonoBehaviour {
     void Start() {
         cachedTransform =
             transform; // cached, because 'transform' is actually a function call with a cost that grows with component count.
-        if (!snake) {
-            Debug.LogWarning(name + " controller has no snake to control!");
-        }
     }
 
     public void OnLook(InputAction.CallbackContext context) => look = context.ReadValue<Vector2>();
@@ -44,29 +41,23 @@ public class Controller : MonoBehaviour {
         return dir;
     }
 
-    private void FixedUpdate() {
-        // happens at very regular intervals, usually slower than Update
-        if (!snake) return;
-
+    private void Update() {
+        // happens every animation frame, not terribly time bound
         var k = Keyboard.current;
-        var movementX = k.leftArrowKey.isPressed ? -1 : k.rightArrowKey.isPressed ? 1 : 0;
-        var movementY = k.downArrowKey.isPressed ? -1 : k.upArrowKey.isPressed ? 1 : 0;
-        var movementZ = k.tKey.isPressed ? -1 : k.gKey.isPressed ? 1 : 0;
+        var movementX = k.leftArrowKey.wasPressedThisFrame ? -1 : k.rightArrowKey.wasPressedThisFrame ? 1 : 0;
+        var movementY = k.downArrowKey.wasPressedThisFrame ? -1 : k.upArrowKey.wasPressedThisFrame ? 1 : 0;
+        var movementZ = k.tKey.wasPressedThisFrame ? -1 : k.gKey.wasPressedThisFrame ? 1 : 0;
         bool movingX = movementX != 0;
         bool movingY = movementY != 0;
         bool movingZ = movementZ != 0;
 
         if (movingX || movingY || movingZ) {
-            int Sign(float value) => value > 0 ? 1 : -1;
-            snake.direction =
-                movingX ? Vector3.right * Sign(movementX) :
-                movingY ? Vector3.up * Sign(movementY) :
-                Vector3.back * Sign(movementZ);
+            snake.nextDirection =
+                movingX ? Vector3.right * movementX :
+                movingY ? Vector3.up * movementY :
+                Vector3.back * movementZ;
         }
-    }
 
-    private void Update() {
-        // happens every animation frame, not terribly time bound
         cameraPitchAndYaw.x -= look.y * mouseSensitivity.y; // inverting y axis, 
         cameraPitchAndYaw.y += look.x * mouseSensitivity.x;
         distanceFromTarget += zoom * mouseSensitivity.z;
